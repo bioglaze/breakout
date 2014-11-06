@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8A38A1C7-D3D7-4A52-9312-489731726949}</ProjectGuid>
+    <Compiler>DMD2</Compiler>
+    <PreferOneStepBuild>true</PreferOneStepBuild>
+    <UseDefaultCompiler>true</UseDefaultCompiler>
+    <IncrementalLinking>true</IncrementalLinking>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug</OutputPath>
+    <ObjectsDirectory>obj/Debug</ObjectsDirectory>
+    <LinkinThirdPartyLibraries>false</LinkinThirdPartyLibraries>
+    <UnittestMode>false</UnittestMode>
+    <OutputName>Breakout</OutputName>
+    <Target>Executable</Target>
+    <Externalconsole>true</Externalconsole>
+    <DebugLevel>0</DebugLevel>
+    <ExtraCompilerArguments>-L-Llib -L-lDerelictSDL2 -L-lDerelictUtil -L-lDerelictGL3</ExtraCompilerArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <ObjectsDirectory>obj/Release</ObjectsDirectory>
+    <LinkinThirdPartyLibraries>false</LinkinThirdPartyLibraries>
+    <UnittestMode>false</UnittestMode>
+    <OutputName>Breakout</OutputName>
+    <Target>Executable</Target>
+    <Externalconsole>true</Externalconsole>
+    <DebugLevel>0</DebugLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unittest|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Unittest</OutputPath>
+    <ObjectsDirectory>obj/Unittest</ObjectsDirectory>
+    <LinkinThirdPartyLibraries>false</LinkinThirdPartyLibraries>
+    <UnittestMode>true</UnittestMode>
+    <OutputName>Breakout</OutputName>
+    <Target>Executable</Target>
+    <Externalconsole>true</Externalconsole>
+    <DebugLevel>0</DebugLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="main.d" />
+    <Compile Include="derelict\sdl2\functions.d" />
+    <Compile Include="derelict\sdl2\image.d" />
+    <Compile Include="derelict\sdl2\mixer.d" />
+    <Compile Include="derelict\sdl2\net.d" />
+    <Compile Include="derelict\sdl2\sdl.d" />
+    <Compile Include="derelict\sdl2\ttf.d" />
+    <Compile Include="derelict\sdl2\types.d" />
+    <Compile Include="derelict\util\exception.d" />
+    <Compile Include="derelict\util\loader.d" />
+    <Compile Include="derelict\util\sharedlib.d" />
+    <Compile Include="derelict\util\system.d" />
+    <Compile Include="derelict\util\wintypes.d" />
+    <Compile Include="derelict\util\xtypes.d" />
+    <Compile Include="derelict\opengl3\arb.d" />
+    <Compile Include="derelict\opengl3\cgl.d" />
+    <Compile Include="derelict\opengl3\constants.d" />
+    <Compile Include="derelict\opengl3\deprecatedConstants.d" />
+    <Compile Include="derelict\opengl3\deprecatedFunctions.d" />
+    <Compile Include="derelict\opengl3\ext.d" />
+    <Compile Include="derelict\opengl3\functions.d" />
+    <Compile Include="derelict\opengl3\gl.d" />
+    <Compile Include="derelict\opengl3\gl3.d" />
+    <Compile Include="derelict\opengl3\glx.d" />
+    <Compile Include="derelict\opengl3\glxext.d" />
+    <Compile Include="derelict\opengl3\internal.d" />
+    <Compile Include="derelict\opengl3\types.d" />
+    <Compile Include="derelict\opengl3\wgl.d" />
+    <Compile Include="derelict\opengl3\wglext.d" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="derelict\" />
+    <Folder Include="derelict\opengl3\" />
+  </ItemGroup>
+</Project>
