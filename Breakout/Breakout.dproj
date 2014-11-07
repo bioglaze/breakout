@@ -30,6 +30,7 @@
     <Target>Executable</Target>
     <Externalconsole>true</Externalconsole>
     <DebugLevel>0</DebugLevel>
+    <ExtraCompilerArguments>-L-Llib -L-lDerelictSDL2 -L-lDerelictUtil -L-lDerelictGL3</ExtraCompilerArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unittest|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +42,7 @@
     <Target>Executable</Target>
     <Externalconsole>true</Externalconsole>
     <DebugLevel>0</DebugLevel>
+    <ExtraCompilerArguments>-L-Llib -L-lDerelictSDL2 -L-lDerelictUtil -L-lDerelictGL3</ExtraCompilerArguments>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="main.d" />
@@ -72,9 +74,18 @@
     <Compile Include="derelict\opengl3\types.d" />
     <Compile Include="derelict\opengl3\wgl.d" />
     <Compile Include="derelict\opengl3\wglext.d" />
+    <Compile Include="shader.d" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="derelict\" />
     <Folder Include="derelict\opengl3\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="shader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
