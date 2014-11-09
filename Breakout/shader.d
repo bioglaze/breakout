@@ -11,14 +11,14 @@ class Shader
 	{
 		try
 		{
+			program = glCreateProgram();
 			Compile( ReadFile( vertexPath ), GL_VERTEX_SHADER );
 			Compile( ReadFile( fragmentPath ), GL_FRAGMENT_SHADER );
-			program = glCreateProgram();
 			Link();
 		}
 		catch (Exception e)
 		{
-			writeln( "Could not open " ~ vertexPath ~ " or " ~ fragmentPath );
+			writeln( "Could not open or compile " ~ vertexPath ~ " or " ~ fragmentPath );
 		}
 	}
 
@@ -26,6 +26,23 @@ class Shader
 	{
 		immutable char* nameCstr = toStringz( name );
 		glUniform1f( glGetUniformLocation( program, nameCstr ), value );
+	}
+
+	public void SetFloat2( string name, float value1, float value2 )
+	{
+		immutable char* nameCstr = toStringz( name );
+		glUniform2f( glGetUniformLocation( program, nameCstr ), value1, value2 );
+	}
+
+	public void SetMatrix44( string name, float[] matrix )
+	{
+		immutable char* nameCstr = toStringz( name );
+		glUniformMatrix4fv( glGetUniformLocation( program, nameCstr ), 1, GL_FALSE, &matrix[0] );
+	}
+
+	public void Use()
+	{
+		glUseProgram( program );
 	}
 
 	private void Link()
@@ -39,22 +56,33 @@ class Shader
 		assert( status == GL_LINK_STATUS || status == GL_COMPILE_STATUS, "Wrong status!" );
 
 		GLint shaderCompiled = GL_FALSE;
-		glGetShaderiv( shader, status, &shaderCompiled );
-		
+
+		if (status == GL_COMPILE_STATUS)
+		{
+			glGetShaderiv( shader, GL_COMPILE_STATUS, &shaderCompiled );
+		}
+		else
+		{
+			glGetProgramiv( shader, GL_LINK_STATUS, &shaderCompiled );
+		}
+
 		if (shaderCompiled != GL_TRUE)
 		{
-			int infoLogLength = 0;
-			int maxLength = infoLogLength;
-			
-			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &maxLength );
-			char[] infoLog = new char[ maxLength + 1 ];
-			
-			glGetProgramInfoLog( program, maxLength, &infoLogLength, &infoLog[ 0 ] );
-			
-			if (infoLogLength > 0)
+			writeln("Shader could not be " ~ (status == GL_LINK_STATUS ? "linked!" : "compiled!"));
+
+			char[1000] errorLog;
+			auto info = errorLog.ptr;
+
+			if (status == GL_COMPILE_STATUS)
 			{
-				writeln( infoLog );
+				glGetShaderInfoLog( shader, 1000, null, info );
 			}
+			else
+			{
+				glGetProgramInfoLog( program, 1000, null, info );
+			}
+
+			writeln( errorLog );
 		}
 	}
 
@@ -65,8 +93,10 @@ class Shader
 		immutable char* sourceCstr = toStringz( source );
 		GLuint shader = glCreateShader( shaderType );
 		glShaderSource( shader, 1, &sourceCstr, null );
+
 		glCompileShader( shader );
 		PrintInfoLog( shader, GL_COMPILE_STATUS );
+		glAttachShader( program, shader );
 	}
 
 	private string ReadFile( string path )
