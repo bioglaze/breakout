@@ -6,14 +6,9 @@ import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
 import shader;
 
+//float[] vertices = [ -1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1 ];
 GLuint vao;
 GLuint vbo;
-//float[] vertices = [ -1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1 ];
-float[] triangle = [ 
-    -1.0f, -1.0f, 0.0f,
-	 1.0f, -1.0f, 0.0f,
-	 0.0f,  1.0f, 0.0f
-];
 
 void CheckGLError( string info )
 {
@@ -45,9 +40,15 @@ void GenerateQuadBuffers()
 	glGenVertexArrays( 1, &vao );
 	glBindVertexArray( vao );
 
+	float[] triangle = [ 
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f,  1.0f, 0.0f
+	];
+
 	glGenBuffers( 1, &vbo );
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferData( GL_ARRAY_BUFFER, triangle.length * GLfloat.sizeof, &triangle, GL_STATIC_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, triangle.length * GLfloat.sizeof, &triangle[0], GL_STATIC_DRAW );
 	glEnableVertexAttribArray( 0 );
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, null );
 	CheckGLError("GenerateQuadBuffers end");
@@ -56,7 +57,7 @@ void GenerateQuadBuffers()
 void DrawQuad( Shader shader, float x, float y, float width, float height )
 {
 	shader.SetFloat2( "position", x, y );
-	shader.SetFloat2( "scale", width, height );
+	//shader.SetFloat2( "scale", width, height );
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
 }
 
@@ -66,7 +67,12 @@ void main(string[] args)
 	const int screenHeight = 480;
 
 	DerelictSDL2.load();
-	SDL_Init( SDL_INIT_EVERYTHING );
+
+	if (SDL_Init( SDL_INIT_EVERYTHING ) < 0)
+	{
+		throw new Error( "Failed to initialze SDL: " ~ to!string( SDL_GetError() ) );
+	}
+
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
@@ -77,6 +83,12 @@ void main(string[] args)
 	                    SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	DerelictGL3.load();
 	auto context = SDL_GL_CreateContext( win );
+
+	if (!context)
+	{
+		throw new Error( "Failed to create GL context!" );
+	}
+
 	DerelictGL3.reload();
 
 	writefln("Vendor:   %s",   to!string( glGetString( GL_VENDOR ) ) );
@@ -84,7 +96,6 @@ void main(string[] args)
 	writefln("Version:  %s",   to!string( glGetString( GL_VERSION ) ) );
 	writefln("GLSL:     %s\n", to!string( glGetString( GL_SHADING_LANGUAGE_VERSION ) ) );
 
-	SDL_ShowWindow( win );
 	SDL_GL_SetSwapInterval( 1 );
 
 	float[] projection;
@@ -138,12 +149,15 @@ void main(string[] args)
 		}
 
 		glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-		DrawQuad( gshader, 10, 10, 50, 50 );
+		DrawQuad( gshader, 10, -10, 10, 10 );
 		CheckGLError("Before swap");
 		SDL_GL_SwapWindow( win );
 	}
 
 	glDeleteBuffers( 1, &vbo );
 	glDeleteVertexArrays( 1, &vao );
+
+	SDL_DestroyWindow( win );
+	SDL_Quit();
 }
 

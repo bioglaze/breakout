@@ -8,7 +8,7 @@ uniform vec2 scale;
 
 void main()
 {
-    gl_Position = vec4( inPosition, 1 );
-    //gl_Position = projectionMatrix * vec4( (inPosition + position) * scale, 2.0f, 1.0f );
+    gl_Position = vec4( inPosition, 1.0 );
+    //gl_Position = projectionMatrix * vec4( inPosition.xy * vec2( 5, 5 ) + vec2( 20, 20 ) /*+ position*/, 0.0/*inPosition.z*/, 1.0 );
 }
 
