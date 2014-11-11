@@ -1,11 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="main.d">
+  <MonoDevelop.Ide.Workbench ActiveDocument="game.d">
     <Files>
-      <File FileName="main.d" Line="13" Column="13" />
+      <File FileName="main.d" Line="1" Column="1" />
       <File FileName="shader.d" Line="1" Column="1" />
       <File FileName="shader.frag" Line="1" Column="1" />
       <File FileName="shader.vert" Line="1" Column="1" />
+      <File FileName="game.d" Line="103" Column="103" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

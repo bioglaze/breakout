@@ -2,7 +2,7 @@
  * Breakout game
  * 
  * Written by Timo Wiren (http://twiren.kapsi.fi)
- * Date: 2014-11-10
+ * Date: 2014-11-11
  */
 module main;
 
@@ -11,6 +11,7 @@ import std.conv;
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
 import shader;
+import game;
 
 void CheckGLError( string info )
 {
@@ -50,73 +51,6 @@ void GenerateQuadBuffers( ref GLuint vao, ref GLuint vbo )
 	glEnableVertexAttribArray( 0 );
 	glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, null );
 	CheckGLError("GenerateQuadBuffers end");
-}
-
-void DrawQuad( Shader shader, float x, float y, float width, float height )
-{
-	shader.SetFloat2( "position", x, y );
-	shader.SetFloat2( "scale", width, height );
-	glDrawArrays( GL_TRIANGLES, 0, 6 );
-}
-
-struct Vec2(T)
-{
-	T x;
-	T y;
-}
-
-class Game
-{
-	this( Shader aShader, int aScreenWidth, int aSreenHeight )
-	{
-		shader = aShader;
-		screenSize.x = aScreenWidth;
-		screenSize.y = aSreenHeight;
-		ballDirection.x = 0;
-		ballDirection.y = 0.2f;
-	}
-
-	public void SetPaddle( int x, int y )
-	{
-		paddlePos.x = x;
-		paddlePos.y = y;
-	}
-
-	public void SetBall( int x, int y )
-	{
-		ballPos.x = x;
-		ballPos.y = y;
-	}
-
-	public void Simulate()
-	{
-		ballPos.x += ballDirection.x;
-		ballPos.y += ballDirection.y;
-	}
-
-	public void MoveHoriz( int amount )
-	{
-		bool rightOk = amount > 0 && paddlePos.x + paddleWidth < screenSize.x;
-		bool leftOk = amount < 0 && paddlePos.x > 0;
-
-		if (rightOk || leftOk)
-		{
-			paddlePos.x += amount;
-		}
-	}
-
-	public void Draw()
-	{
-		DrawQuad( shader, paddlePos.x, paddlePos.y, paddleWidth, 20 );
-		DrawQuad( shader, ballPos.x, ballPos.y, 20, 20 );
-	}
-
-	private int paddleWidth = 100;
-	private Shader shader;
-	private Vec2!float ballPos;
-	private Vec2!float ballDirection;
-	private Vec2!int screenSize;
-	private Vec2!int paddlePos;
 }
 
 void main( string[] args )
@@ -167,50 +101,45 @@ void main( string[] args )
 	Game game = new Game( gshader, screenWidth, screenHeight );
 	game.SetPaddle( 0, screenHeight - 100 );
 	game.SetBall( screenWidth / 2, screenHeight / 2 );
-	const int paddleSpeed = 20;
+	const float paddleSpeed = 600;
+
+	Uint32 lastTick = SDL_GetTicks();
 
 	while (!quit)
 	{
-		SDL_Event event;
+		float deltaTime = (SDL_GetTicks() - lastTick) / 1000.0f;
 
-		while( SDL_PollEvent( &event ) != 0 )
+		lastTick = SDL_GetTicks();
+		SDL_Event e;
+		const Uint8* keyState = SDL_GetKeyboardState( null );    
+
+		if (keyState[ SDL_SCANCODE_RIGHT ] == 1)
 		{
-			if (event.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-			else if (event.type == SDL_KEYDOWN)
-			{
-				switch( event.key.keysym.sym )
-				{
-					case SDLK_ESCAPE:
-						quit = true;
-						break;
+			game.MoveHoriz( paddleSpeed * deltaTime );
+		}
 
-					case SDLK_UP:
-						writeln("up");
-						break;
-						
-					case SDLK_DOWN:
-						writeln("down");
-						break;
-						
-					case SDLK_LEFT:
-						game.MoveHoriz( -paddleSpeed );
-						break;
-						
-					case SDLK_RIGHT:
-						game.MoveHoriz( paddleSpeed );
-						break;
-						
-					default:
-						break;
+		if (keyState[ SDL_SCANCODE_LEFT ] == 1)
+		{
+			game.MoveHoriz( -paddleSpeed * deltaTime );
+		}
+
+		if (keyState[ SDL_SCANCODE_ESCAPE ] == 1)
+		{
+			quit = true;
+		}
+
+		while (SDL_PollEvent( &e ))
+		{
+			if (e.type == SDL_WINDOWEVENT)
+			{
+				if (e.window.event == SDL_WINDOWEVENT_CLOSE)
+				{
+					quit = true;
 				}
 			}
 		}
 
 		glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-		//DrawQuad( gshader, 10, 10, 50, 50 );
 		game.Simulate();
 		game.Draw();
 		CheckGLError("Before swap");

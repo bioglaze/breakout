@@ -75,6 +75,7 @@
     <Compile Include="derelict\opengl3\wgl.d" />
     <Compile Include="derelict\opengl3\wglext.d" />
     <Compile Include="shader.d" />
+    <Compile Include="game.d" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="derelict\" />
