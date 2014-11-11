@@ -37,12 +37,17 @@ class Shader
 	public void SetMatrix44( string name, float[] matrix )
 	{
 		immutable char* nameCstr = toStringz( name );
-		glUniformMatrix4fv( glGetUniformLocation( program, nameCstr ), 1, GL_FALSE, &matrix[0] );
+		glUniformMatrix4fv( glGetUniformLocation( program, nameCstr ), 1, GL_FALSE, matrix.ptr );
 	}
 
 	public void Use()
 	{
 		glUseProgram( program );
+	}
+
+	public void Delete()
+	{
+		glDeleteProgram( program );
 	}
 
 	private void Link()
