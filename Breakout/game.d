@@ -1,6 +1,7 @@
 ﻿module game;
 import derelict.opengl3.gl3;
 import shader;
+import std.random;
 
 struct Vec2(T)
 {
@@ -42,9 +43,27 @@ class Game
 		ballPos.x = x;
 		ballPos.y = y;
 	}
-	
+
+	public void Start()
+	{
+		if (running)
+		{
+			return;
+		}
+
+		running = true;
+		auto rnd = uniform( 2.0f, 2.5f );
+		ballDirection.x = rnd;
+		ballDirection.y = rnd;
+	}
+
 	public void Simulate()
 	{
+		if (!running)
+		{
+			return;
+		}
+
 		ballPos.x += ballDirection.x;
 		ballPos.y += ballDirection.y;
 
@@ -61,7 +80,7 @@ class Game
 		for (int i = 0; i < blocks.length; ++i)
 		{
 			bool xHits = ballPos.x > blocks[ i ].position.x && ballPos.x < blocks[ i ].position.x + blockSize.x + ballSize.x;
-			bool yHits = ballPos.y > blocks[ i ].position.y && ballPos.y < blocks[ i ].position.y + blockSize.y;
+			bool yHits = ballPos.y + ballSize.y > blocks[ i ].position.y && ballPos.y < blocks[ i ].position.y + blockSize.y;
 
 			if (xHits && yHits && blocks[ i ].alive)
 			{
@@ -89,7 +108,7 @@ class Game
 		DrawBlocks();
 	}
 
-	private bool BallCollidesWithPaddle()
+	private pure bool BallCollidesWithPaddle()
 	{
 		float xInside = ballPos.x > paddlePos.x - 20 && ballPos.x < paddlePos.x + paddleWidth + 20;
 		float yInside = ballPos.y > paddlePos.y - 20 && ballPos.y < paddlePos.y + 20;
@@ -100,10 +119,10 @@ class Game
 	{
 		for (int y = 0; y < 5; ++y)
 		{
-			for (int x = 0; x < 5; ++x)
+			for (int x = 0; x < 10; ++x)
 			{
-				blocks[ y * 5 + x ].position.x = 200 + x * 50;
-				blocks[ y * 5 + x ].position.y = 100 + y * 30;
+				blocks[ y * 10 + x ].position.x = 70 + x * 50;
+				blocks[ y * 10 + x ].position.y = 50 + y * 30;
 			}
 		}
 	}
@@ -126,7 +145,8 @@ class Game
 	private Vec2!float ballDirection = { -2, 2 };
 	private Vec2!int screenSize;
 	private Vec2!float paddlePos;
-	private Block[5 * 5] blocks;
+	private Block[5 * 10] blocks;
 	private Vec2!int blockSize = { 40, 20 };
+	private bool running = false;
 }
 

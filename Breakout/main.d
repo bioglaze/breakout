@@ -2,7 +2,7 @@
  * Breakout game
  * 
  * Written by Timo Wiren (http://twiren.kapsi.fi)
- * Date: 2014-11-11
+ * Date: 2014-11-12
  */
 module main;
 
@@ -115,6 +115,7 @@ void main( string[] args )
 
 		if (keyState[ SDL_SCANCODE_RIGHT ] == 1)
 		{
+			game.Start();
 			game.MoveHoriz( paddleSpeed * deltaTime );
 		}
 
