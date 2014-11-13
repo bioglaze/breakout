@@ -2,6 +2,7 @@
 import derelict.opengl3.gl3;
 import shader;
 import std.random;
+import std.stdio;
 
 struct Vec2(T)
 {
@@ -59,6 +60,11 @@ class Game
 
 	public void Simulate()
 	{
+		if (IsGameOver())
+		{
+			Reset();
+		}
+
 		if (!running)
 		{
 			return;
@@ -66,6 +72,13 @@ class Game
 
 		ballPos.x += ballDirection.x;
 		ballPos.y += ballDirection.y;
+
+		if (ballPos.y + ballSize.y >= screenSize.y)
+		{
+			playerDead = true;
+			running = false;
+			return;
+		}
 
 		if (ballPos.x <= 0 || ballPos.x + ballSize.x >= screenSize.x)
 		{
@@ -138,6 +151,41 @@ class Game
 		}
 	}
 
+	private void Reset()
+	{
+		ballDirection.x = -2;
+		ballDirection.y = 2;
+		paddlePos.x = 10;
+		paddlePos.y = screenSize.y - 100;
+		SetBall( screenSize.x / 2, screenSize.y / 2 );
+
+		running = false;
+		playerDead = false;
+
+		for (int i = 0; i < blocks.length; ++i)
+		{
+			blocks[ i ].alive = true;
+		}
+	}
+
+	private bool IsGameOver()
+	{
+		if (playerDead)
+		{
+			return true;
+		}
+
+		for (int i = 0; i < blocks.length; ++i)
+		{
+			if (blocks[ i ].alive)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private int paddleWidth = 100;
 	private Shader shader;
 	private Vec2!int ballSize = { 20, 20 };
@@ -148,5 +196,6 @@ class Game
 	private Block[5 * 10] blocks;
 	private Vec2!int blockSize = { 40, 20 };
 	private bool running = false;
+	private bool playerDead = false;
 }
 

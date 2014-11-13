@@ -12,8 +12,8 @@ class Shader
 		try
 		{
 			program = glCreateProgram();
-			Compile( ReadFile( vertexPath ), GL_VERTEX_SHADER );
-			Compile( ReadFile( fragmentPath ), GL_FRAGMENT_SHADER );
+			Compile( cast(string)read( vertexPath ), GL_VERTEX_SHADER );
+			Compile( cast(string)read( fragmentPath ), GL_FRAGMENT_SHADER );
 			Link();
 		}
 		catch (Exception e)
@@ -102,20 +102,6 @@ class Shader
 		glCompileShader( shader );
 		PrintInfoLog( shader, GL_COMPILE_STATUS );
 		glAttachShader( program, shader );
-	}
-
-	private string ReadFile( string path )
-	{
-		auto inFile = File( path, "r" );
-		string outContents;
-
-		while (!inFile.eof())
-		{
-			string line = inFile.readln();
-			outContents ~= line;
-		}
-
-		return outContents;
 	}
 
 	private GLuint program;
