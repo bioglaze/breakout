@@ -1,1 +1,1 @@
-dmd main.d shader.d -L+.\lib\win32\ derelictsdl2.lib derelictutil.lib derelictGL3.lib
+dmd main.d shader.d game.d -L+.\lib\win32\ derelictsdl2.lib derelictutil.lib derelictGL3.lib
