@@ -38,7 +38,7 @@ private {
     static if( Derelict_OS_Windows )
         enum libNames = "SDL2_ttf.dll";
     else static if( Derelict_OS_Mac )
-        enum libNames = "../Frameworks/SDL2_ttf.framework/SDL2_ttf, /Library/Frameworks/SDL2_ttf.framework/SDL2_ttf, /System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf";
+        enum libNames = "/usr/local/lib/libSDL2_ttf.dylib, ../Frameworks/SDL2_ttf.framework/SDL2_ttf, /Library/Frameworks/SDL2_ttf.framework/SDL2_ttf, /System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf";
     else static if( Derelict_OS_Posix )
         enum libNames = "libSDL2_ttf.so, libSDL2_ttf-2.0.so, libSDL2_ttf-2.0.so.0, /usr/local/lib/libSDL2_ttf-2.0.so, /usr/local/lib/libSDL2_ttf-2.0.so.0";
     else
@@ -76,15 +76,17 @@ alias TTF_GetError = SDL_GetError;
 
 struct TTF_Font;
 
-nothrow void SDL_TTF_VERSION( SDL_version* X ) {
-    X.major = SDL_TTF_MAJOR_VERSION;
-    X.minor = SDL_TTF_MINOR_VERSION;
-    X.patch = SDL_TTF_PATCHLEVEL;
+@nogc nothrow {
+    void SDL_TTF_VERSION( SDL_version* X ) {
+        X.major = SDL_TTF_MAJOR_VERSION;
+        X.minor = SDL_TTF_MINOR_VERSION;
+        X.patch = SDL_TTF_PATCHLEVEL;
+    }
+
+    void TTF_VERSION( SDL_version* X ) { SDL_TTF_VERSION( X ); }
 }
 
-nothrow void TTF_VERSION( SDL_version* X ) { SDL_TTF_VERSION( X ); }
-
-extern ( C ) nothrow {
+extern ( C ) @nogc nothrow {
     alias da_TTF_Linked_Version = SDL_version* function();
     alias da_TTF_ByteSwappedUNICODE = void function( int );
     alias da_TTF_Init = int function();

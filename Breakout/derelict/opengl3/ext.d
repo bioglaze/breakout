@@ -242,7 +242,10 @@ enum : uint {
     GL_COMPRESSED_RED_RGTC1_EXT          = 0x8DBB,
     GL_COMPRESSED_SIGNED_RED_RGTC1_EXT   = 0x8DBC,
     GL_COMPRESSED_RED_GREEN_RGTC2_EXT    = 0x8DBD,
-    GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT = 0x8DBE
+    GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT = 0x8DBE,
+
+    // GL_APPLE_vertex_array_object
+    GL_VERTEX_ARRAY_BINDING_APPLE        = 0x85B5,
 }
 
 // GL_EXT_texture_filter_anisotropic
@@ -318,7 +321,7 @@ private void load_EXT_framebuffer_object() {
 }
 
 // GL_EXT_draw_buffers2
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glColorMaskIndexedEXT = void function(uint buf, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
     alias da_glGetBooleanIndexedvEXT = void function(GLenum value, uint index, GLboolean *data);
     alias da_glGetIntegerIndexedvEXT = void function(GLenum value, uint index, int *data);
@@ -353,7 +356,7 @@ private void load_EXT_draw_buffers2() {
 }
 
 // GL_NV_explicit_multisample
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glGetMultisamplefvNV = void function(GLenum pname, uint index, float *val);
     alias da_glSampleMaskIndexedNV = void function(GLuint index, GLbitfield mask);
     alias da_glTexRenderbufferNV = void function(GLenum target, uint renderbuffer);
@@ -379,7 +382,7 @@ private void load_NV_explicit_multisample() {
 }
 
 // GL_EXT_geometry_shader4
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glProgramParameteriEXT = void function(uint program, GLenum pname, int value);
     alias da_glFramebufferTextureEXT = void function(GLenum target, GLenum attachment, uint texture, int level);
     alias da_glFramebufferTextureLayerEXT = void function(GLenum target, GLenum attachment, uint texture, int level, int layer);
@@ -408,7 +411,7 @@ private void load_EXT_geometry_shader4() {
 }
 
 // GL_NV_framebuffer_multisample_coverage
-extern ( System ) @nogc nothrow alias da_glRenderbufferStorageMultisampleCoverageNV = void function(GLenum target, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height);
+extern( System ) @nogc nothrow alias da_glRenderbufferStorageMultisampleCoverageNV = void function(GLenum target, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height);
 __gshared da_glRenderbufferStorageMultisampleCoverageNV glRenderbufferStorageMultisampleCoverageNV;
 private __gshared bool _NV_framebuffer_multisample_coverage;
 @nogc bool NV_framebuffer_multisample_coverage() nothrow @property { return _NV_framebuffer_multisample_coverage; }
@@ -422,7 +425,7 @@ private void load_NV_framebuffer_multisample_coverage() {
 }
 
 // GL_NV_gpu_program4
-extern ( System ) {
+extern( System ) @nogc nothrow {
     alias da_glProgramLocalParameterI4iNV = void function(GLenum target, uint index, int x, int y, int z, int w);
     alias da_glProgramLocalParameterI4ivNV = void function(GLenum target, uint index, const int *params);
     alias da_glProgramLocalParametersI4ivNV = void function(GLenum target, uint index, GLsizei count, const int *params);
@@ -487,7 +490,7 @@ private void load_NV_gpu_program4() {
 }
 
 // GL_EXT_gpu_program_parameters
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glProgramEnvParameters4fvEXT = void function(GLenum target, uint index, GLsizei count, const float *params);
     alias da_glProgramLocalParameters4fvEXT = void function(GLenum target, uint index, GLsizei count, const float *params);
 }
@@ -510,7 +513,7 @@ private void load_EXT_gpu_program_parameters() {
 }
 
 // GL_EXT_gpu_shader4
-extern ( System ) {
+extern( System ) @nogc nothrow {
     alias da_glVertexAttribI1iEXT = void function(uint index, int x);
     alias da_glVertexAttribI2iEXT = void function(uint index, int x, int y);
     alias da_glVertexAttribI3iEXT = void function(uint index, int x, int y, int z);
@@ -629,7 +632,7 @@ private void load_EXT_gpu_shader4() {
 }
 
 // GL_EXT_texture_integer
-extern ( System ) {
+extern( System ) @nogc nothrow {
     alias da_glClearColorIiEXT = void function ( int r, int g, int b, int a );
     alias da_glClearColorIuiEXT = void function ( uint r, uint g, uint b, uint a );
     alias da_glTexParameterIivEXT = void function( GLenum target, GLenum pname, int *params );
@@ -664,7 +667,7 @@ private void load_EXT_texture_integer() {
 }
 
 // GL_EXT_texture_buffer_object
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glTexBufferEXT = void function(GLenum target, GLenum internalformat, uint buffer);
 }
 
@@ -684,7 +687,7 @@ private void load_EXT_texture_buffer_object() {
 }
 
 // GL_EXT_direct_state_access
-extern ( System ) @nogc nothrow {
+extern( System ) @nogc nothrow {
     alias da_glClientAttribDefaultEXT = void function(GLbitfield mask);
     alias da_glPushClientAttribDefaultEXT = void function(GLbitfield mask);
 
@@ -1441,7 +1444,7 @@ private __gshared bool _EXT_texture_compression_rgtc;
 @nogc bool EXT_texture_compression_rgtc() nothrow @property { return _EXT_texture_compression_rgtc; }
 
 // GL_NV_texture_barrier
-extern ( System ) {
+extern( System ) @nogc nothrow {
     alias da_glTextureBarrierNV = void function ();
 }
 
@@ -1460,47 +1463,56 @@ private void load_NV_texture_barrier() {
     }
 }
 
+// GL_APPLE_vertex_array_object
+extern( System ) @nogc nothrow {
+    alias da_glBindVertexArrayAPPLE = void function( GLuint );
+    alias da_glDeleteVertexArraysAPPLE = void function( GLsizei,const( GLuint )* );
+    alias da_glGenVertexArraysAPPLE = void function( GLsizei,GLuint* );
+    alias da_glIsVertexArrayAPPLE = GLboolean function( GLuint );
+}
+
+__gshared {
+    da_glBindVertexArrayAPPLE glBindVertexArrayAPPLE;
+    da_glDeleteVertexArraysAPPLE glDeleteVertexArraysAPPLE;
+    da_glGenVertexArraysAPPLE glGenVertexArraysAPPLE;
+    da_glIsVertexArrayAPPLE glIsVertexArrayAPPLE;
+}
+
+private __gshared bool _APPLE_vertex_array_object;
+@nogc bool APPLE_vertex_array_object() nothrow @property { return _APPLE_vertex_array_object; }
+private void load_APPLE_vertex_array_object() {
+    try {
+        bindGLFunc( cast( void** )&glBindVertexArrayAPPLE, "glBindVertexArrayAPPLE" );
+        bindGLFunc( cast( void** )&glDeleteVertexArraysAPPLE, "glDeleteVertexArraysAPPLE" );
+        bindGLFunc( cast( void** )&glGenVertexArraysAPPLE, "glGenVertexArraysAPPLE" );
+        bindGLFunc( cast( void** )&glIsVertexArrayAPPLE, "glIsVertexArrayAPPLE" );
+        _APPLE_vertex_array_object = true;
+    } catch ( Exception e ) {
+        _APPLE_vertex_array_object = false;
+    }
+}
 
 package void loadEXT( GLVersion glversion ) {
     _EXT_texture_filter_anisotropic = isExtSupported( glversion, "GL_EXT_texture_filter_anisotropic" );
-    _EXT_framebuffer_object = isExtSupported( glversion, "GL_EXT_framebuffer_object" );
-    if( _EXT_framebuffer_object ) load_EXT_framebuffer_object();
 
-    _EXT_texture_buffer_object = isExtSupported( glversion, "GL_EXT_texture_buffer_object" );
-    if( _EXT_texture_buffer_object ) load_EXT_texture_buffer_object();
-
-    _EXT_texture_integer = isExtSupported( glversion, "GL_EXT_texture_integer" );
-    if( _EXT_texture_integer ) load_EXT_texture_integer();
-
-    _EXT_gpu_shader4 = isExtSupported( glversion, "GL_EXT_gpu_shader4" );
-    if( _EXT_gpu_shader4 ) load_EXT_gpu_shader4();
-
-    _EXT_gpu_program_parameters = isExtSupported( glversion, "GL_EXT_gpu_program_parameters" );
-    if( _EXT_gpu_program_parameters ) load_EXT_gpu_program_parameters();
-
-    _NV_gpu_program4 = isExtSupported( glversion, "GL_NV_gpu_program4" );
-    if( _NV_gpu_program4 ) load_NV_gpu_program4();
-
-    _NV_framebuffer_multisample_coverage = isExtSupported( glversion, "GL_NV_framebuffer_multisample_coverage" );
-    if( _NV_framebuffer_multisample_coverage ) load_NV_framebuffer_multisample_coverage();
-
-    _EXT_geometry_shader4 = isExtSupported( glversion, "GL_EXT_geometry_shader4" );
-    if( _EXT_geometry_shader4 ) load_EXT_geometry_shader4();
-
-    _NV_explicit_multisample = isExtSupported( glversion, "GL_NV_explicit_multisample" );
-    if( _NV_explicit_multisample ) load_NV_explicit_multisample();
-
-    _EXT_draw_buffers2 = isExtSupported( glversion, "GL_EXT_draw_buffers2" );
-    if( _EXT_draw_buffers2 ) load_EXT_draw_buffers2();
+    if( isExtSupported( glversion, "GL_EXT_framebuffer_object" )) load_EXT_framebuffer_object();
+    if( isExtSupported( glversion, "GL_EXT_texture_buffer_object" )) load_EXT_texture_buffer_object();
+    if( isExtSupported( glversion, "GL_EXT_texture_integer" )) load_EXT_texture_integer();
+    if( isExtSupported( glversion, "GL_EXT_gpu_shader4" )) load_EXT_gpu_shader4();
+    if( isExtSupported( glversion, "GL_EXT_gpu_program_parameters" )) load_EXT_gpu_program_parameters();
+    if( isExtSupported( glversion, "GL_NV_gpu_program4" )) load_NV_gpu_program4();
+    if( isExtSupported( glversion, "GL_NV_framebuffer_multisample_coverage" )) load_NV_framebuffer_multisample_coverage();
+    if( isExtSupported( glversion, "GL_EXT_geometry_shader4" )) load_EXT_geometry_shader4();
+    if( isExtSupported( glversion, "GL_NV_explicit_multisample" )) load_NV_explicit_multisample();
+    if( isExtSupported( glversion, "GL_EXT_draw_buffers2" )) load_EXT_draw_buffers2();
 
     _EXT_texture_compression_s3tc = isExtSupported( glversion, "GL_EXT_texture_compression_s3tc" );
-
     _EXT_texture_compression_rgtc = isExtSupported( glversion, "GL_EXT_texture_compression_rgtc" );
 
-    _NV_texture_barrier = isExtSupported( glversion, "GL_NV_texture_barrier" );
-    if( _NV_texture_barrier ) load_NV_texture_barrier();
+    if( isExtSupported( glversion, "GL_NV_texture_barrier" )) load_NV_texture_barrier();
+    if( isExtSupported( glversion, "GL_APPLE_vertex_array_object" )) load_APPLE_vertex_array_object();
 
+    // TODO Why does this need to be loaded last?? Who implemented it?
     // Direct state access extension should be ALWAYS loaded in the last place
-    _EXT_direct_state_access = isExtSupported( glversion, "GL_EXT_direct_state_access" );
-    if( _EXT_direct_state_access ) load_EXT_direct_state_access( glversion );
+    if( isExtSupported( glversion, "GL_EXT_direct_state_access" )) load_EXT_direct_state_access( glversion );
 }

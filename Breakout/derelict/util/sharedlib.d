@@ -27,37 +27,33 @@ DEALINGS IN THE SOFTWARE.
 */
 module derelict.util.sharedlib;
 
-private {
-    import std.string;
-    import std.conv;
+import std.string;
+import std.conv;
 
-    import derelict.util.exception;
-    import derelict.util.system;
-}
+import derelict.util.exception;
+import derelict.util.system;
+
+alias void* SharedLibHandle;
 
 static if( Derelict_OS_Posix ) {
-    static if( Derelict_OS_Linux ) {
-        private import std.c.linux.linux;
-    } else {
-        extern( C ) nothrow {
-            /* From <dlfcn.h>
-            *  See http://www.opengroup.org/onlinepubs/007908799/xsh/dlsym.html
-            */
+    import core.sys.posix.dlfcn;
 
-            const int RTLD_NOW = 2;
-
-            void *dlopen( const( char )* file, int mode );
-            int dlclose( void* handle );
-            void *dlsym( void* handle, const( char* ) name );
-            const( char )* dlerror();
-        }
+    enum LDFlags {
+        rtldLocal = RTLD_LOCAL,
+        rtldLazy = RTLD_LAZY,
+        rtldNow = RTLD_NOW,
+        rtldGlobal = RTLD_GLOBAL,
     }
 
-    alias void* SharedLibHandle;
+    void derelictLDFlags(LDFlags flags) {
+        ldFlags = flags;
+    }
 
     private {
+        LDFlags ldFlags = LDFlags.rtldNow;
+
         SharedLibHandle LoadSharedLib( string libName )    {
-            return dlopen( libName.toStringz(), RTLD_NOW );
+            return dlopen( libName.toStringz(), ldFlags );
         }
 
         void UnloadSharedLib( SharedLibHandle hlib ) {
@@ -77,8 +73,7 @@ static if( Derelict_OS_Posix ) {
         }
     }
 } else static if( Derelict_OS_Windows ) {
-    private import derelict.util.wintypes;
-    alias HMODULE SharedLibHandle;
+    import derelict.util.wintypes;
 
     private {
         SharedLibHandle LoadSharedLib( string libName ) {
@@ -121,18 +116,18 @@ struct SharedLib {
 
     public {
         /++
-         Finds and loads a shared library, using libNames to find the library
+         Finds and loads a shared library, using names to find the library
          on the file system.
 
-         If multiple library names are specified in libNames, a SharedLibLoadException
+         If multiple library names are specified in names, a SharedLibLoadException
          will only be thrown if all of the libraries fail to load. It will be the head
          of an exceptin chain containing one instance of the exception for each library
          that failed.
 
 
          Params:
-            libNames =      An array containing one or more shared library names,
-                            with one name per index.
+            names = An array containing one or more shared library names,
+                    with one name per index.
          Throws:    SharedLibLoadException if the shared library or one of its
                     dependencies cannot be found on the file system.
                     SymbolLoadException if an expected symbol is missing from the
@@ -232,6 +227,17 @@ struct SharedLib {
             void missingSymbolCallback( MissingSymbolCallbackFunc callback ) {
                 import std.functional : toDelegate;
                 _onMissingSym = toDelegate( callback );
+            }
+
+            /++
+             Returns the currently active missing symbol callback.
+
+             This exists primarily as a means to save the current callback before
+             setting a new one. It's useful, for example, if the new callback needs
+             to delegate to the old one.
+            +/
+            MissingSymbolCallback missingSymbolCallback() {
+                return _onMissingSym;
             }
         }
     }

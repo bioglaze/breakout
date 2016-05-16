@@ -77,7 +77,9 @@ class DerelictGL3Loader : SharedLibLoader
             return _loadedVersion;
         }
 
-        GLVersion reload() {
+        GLVersion reload( GLVersion minVersion = GLVersion.None, GLVersion maxVersion = GLVersion.HighestSupported) {
+            import std.string : format;
+
             // Make sure a context is active, otherwise this could be meaningless.
             if( !hasValidContext() )
                 throw new DerelictException( "DerelictGL3.reload failure: An OpenGL context is not currently active." );
@@ -86,10 +88,15 @@ class DerelictGL3Loader : SharedLibLoader
             scope( exit ) _loadedVersion = glVer;
 
             GLVersion maxVer = findMaxAvailable();
+            if( minVersion != GLVersion.None && maxVer < minVersion ) {
+                throw new DerelictException(format("OpenGL version %s was required, but context only supports %s", 
+                    minVersion, maxVer));
+            }
+            if( maxVer > maxVersion ) 
+                maxVer = maxVersion;
+
 
             if( maxVer >= GLVersion.GL12 ) {
-                bindGLFunc( cast( void** )&glBlendColor, "glBlendColor" );
-                bindGLFunc( cast( void** )&glBlendEquation, "glBlendEquation" );
                 bindGLFunc( cast( void** )&glDrawRangeElements, "glDrawRangeElements" );
                 bindGLFunc( cast( void** )&glTexImage3D, "glTexImage3D" );
                 bindGLFunc( cast( void** )&glTexSubImage3D, "glTexSubImage3D" );
@@ -118,6 +125,8 @@ class DerelictGL3Loader : SharedLibLoader
                 bindGLFunc( cast( void** )&glPointParameterfv, "glPointParameterfv" );
                 bindGLFunc( cast( void** )&glPointParameteri, "glPointParameteri" );
                 bindGLFunc( cast( void** )&glPointParameteriv, "glPointParameteriv" );
+                bindGLFunc( cast( void** )&glBlendColor, "glBlendColor" );
+                bindGLFunc( cast( void** )&glBlendEquation, "glBlendEquation" );
                 glVer = GLVersion.GL14;
             }
 
@@ -388,6 +397,7 @@ class DerelictGL3Loader : SharedLibLoader
 
             if( maxVer >= GLVersion.GL43 ) {
                 load_ARB_clear_buffer_object( true );
+                load_ARB_copy_image( true );
                 load_ARB_compute_shader( true );
                 load_KHR_debug( true );
                 load_ARB_framebuffer_no_attachments( true );
@@ -420,10 +430,9 @@ class DerelictGL3Loader : SharedLibLoader
                 load_KHR_robustness( true );
                 load_ARB_texture_barrier( true );
 
-                // This was mixed in with the KHR_robustness functions in glcorearb.h,
-                // but the spec for the extension doesn't list it. As such, I'm loading
-                // it here rather than as part of the extension.
                 bindGLFunc( cast( void** )&glGetnTexImage, "glGetnTexImage" );
+                bindGLFunc( cast( void** )&glGetnCompressedTexImage, "glGetnCompressedTexImage" );
+                bindGLFunc( cast( void** )&glGetnUniformdv, "glGetnUniformdv" );
 
                 glVer = GLVersion.GL45;
             }

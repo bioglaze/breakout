@@ -100,8 +100,6 @@ extern( System ) @nogc nothrow {
     alias da_glIsTexture = GLboolean function( GLuint );
 
     // OpenGL 1.2
-    alias da_glBlendColor = void function( GLclampf,GLclampf,GLclampf,GLclampf );
-    alias da_glBlendEquation = void function( GLenum );
     alias da_glDrawRangeElements = void function( GLenum,GLuint,GLuint,GLsizei,GLenum,const( GLvoid )* );
     alias da_glTexImage3D = void function( GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const( GLvoid )* );
     alias da_glTexSubImage3D = void function( GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLenum,const( GLvoid )* );
@@ -126,6 +124,8 @@ extern( System ) @nogc nothrow {
     alias da_glPointParameterfv = void function( GLenum,const( GLfloat )* );
     alias da_glPointParameteri = void function( GLenum,GLint );
     alias da_glPointParameteriv = void function( GLenum,const( GLint )* );
+    alias da_glBlendColor = void function( GLclampf,GLclampf,GLclampf,GLclampf );
+    alias da_glBlendEquation = void function( GLenum );
 
     // OpenGL 1.5
     alias da_glGenQueries = void function( GLsizei,GLuint* );
@@ -333,7 +333,9 @@ extern( System ) @nogc nothrow {
     alias da_glBlendFuncSeparatei = void function( GLuint,GLenum,GLenum,GLenum,GLenum );
 
     // OpenGL 4.5
+    alias da_glGetnCompressedTexImage = void function( GLenum,GLint,GLsizei,void* );
     alias da_glGetnTexImage = void function( GLenum,GLint,GLenum,GLenum,GLsizei,void* );
+    alias da_glGetnUniformdv = void function( GLuint,GLint,GLsizei,GLdouble* );
 }
 
 __gshared {
@@ -611,4 +613,6 @@ __gshared {
     da_glBlendFunci glBlendFunci;
     da_glBlendFuncSeparatei glBlendFuncSeparatei;
     da_glGetnTexImage glGetnTexImage;
+    da_glGetnCompressedTexImage glGetnCompressedTexImage;
+    da_glGetnUniformdv glGetnUniformdv;
 }

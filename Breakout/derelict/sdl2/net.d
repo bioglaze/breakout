@@ -36,7 +36,7 @@ private {
     static if(Derelict_OS_Windows)
         enum libNames = "SDL2_net.dll";
     else static if(Derelict_OS_Mac)
-        enum libNames = "../Frameworks/SDL2_net.framework/SDL2_net, /Library/Frameworks/SDL2_net.framework/SDL2_net, /System/Library/Frameworks/SDL2_net.framework/SDL2_net";
+        enum libNames = "/usr/local/lib/libSDL2_net.dylib, ../Frameworks/SDL2_net.framework/SDL2_net, /Library/Frameworks/SDL2_net.framework/SDL2_net, /System/Library/Frameworks/SDL2_net.framework/SDL2_net";
     else static if(Derelict_OS_Posix)
         enum libNames = "libSDL2_net.so, libSDL2_net-2.0.so, libSDL2_net-2.0.so.0, /usr/local/lib/libSDL2_net-2.0.so, /usr/local/lib/libSDL2_net-2.0.so.0";
     else
@@ -51,7 +51,7 @@ enum : Uint8 {
     SDL_NET_PATCHLEVEL    = 0,
 }
 
-void SDL_NET_VERSION(SDL_version* X) {
+@nogc nothrow void SDL_NET_VERSION(SDL_version* X) {
     X.major = SDL_NET_MAJOR_VERSION;
     X.minor = SDL_NET_MINOR_VERSION;
     X.patch = SDL_NET_PATCHLEVEL;
@@ -93,18 +93,20 @@ struct _SDLNet_GenericSocket {
 }
 alias SDLNet_GenericSocket = _SDLNet_GenericSocket*;
 
-nothrow int SDLNet_TCP_AddSocket( SDLNet_SocketSet set, void* sock ) {
-    return SDLNet_AddSocket( set, cast( SDLNet_GenericSocket )sock );
-}
-alias SDLNet_UDP_AddSocket = SDLNet_TCP_AddSocket;
+@nogc nothrow {
+    int SDLNet_TCP_AddSocket( SDLNet_SocketSet set, void* sock ) {
+        return SDLNet_AddSocket( set, cast( SDLNet_GenericSocket )sock );
+    }
+    alias SDLNet_UDP_AddSocket = SDLNet_TCP_AddSocket;
 
-nothrow int SDLNet_TCP_DelSocket( SDLNet_SocketSet set, void* sock ) {
-    return SDLNet_DelSocket( set, cast( SDLNet_GenericSocket )sock );
-}
-alias SDLNet_UDP_DelSocket = SDLNet_TCP_DelSocket;
+    int SDLNet_TCP_DelSocket( SDLNet_SocketSet set, void* sock ) {
+        return SDLNet_DelSocket( set, cast( SDLNet_GenericSocket )sock );
+    }
+    alias SDLNet_UDP_DelSocket = SDLNet_TCP_DelSocket;
 
-nothrow bool SDLNet_SocketReady( void* sock ) {
-    return sock && (cast( SDLNet_GenericSocket )sock).ready != 0;
+    bool SDLNet_SocketReady( void* sock ) {
+        return sock && (cast( SDLNet_GenericSocket )sock).ready != 0;
+    }
 }
 
 extern( C ) @nogc nothrow {

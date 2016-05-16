@@ -37,7 +37,7 @@ private {
     static if( Derelict_OS_Windows )
         enum libNames = "SDL2_image.dll";
     else static if( Derelict_OS_Mac )
-        enum libNames = "../Frameworks/SDL2_image.framework/SDL2_image, /Library/Frameworks/SDL2_image.framework/SDL2_image, /System/Library/Frameworks/SDL2_image.framework/SDL2_image";
+        enum libNames = "/usr/local/lib/libSDL2_image.dylib, ../Frameworks/SDL2_image.framework/SDL2_image, /Library/Frameworks/SDL2_image.framework/SDL2_image, /System/Library/Frameworks/SDL2_image.framework/SDL2_image";
     else static if( Derelict_OS_Posix )
         enum libNames = "libSDL2_image.so, libSDL2_image-2.0.so, libSDL2_image-2.0.so.0, /usr/local/lib/libSDL2_image.so, /usr/local/lib/libSDL2_image-2.0.so, /usr/local/lib/libSDL2_image-2.0.so.0";
     else
@@ -53,7 +53,7 @@ enum : Uint8 {
     SDL_IMAGE_PATCHLEVEL        = 0,
 }
 
-void SDL_IMAGE_VERSION( SDL_version* X ) {
+@nogc nothrow void SDL_IMAGE_VERSION( SDL_version* X ) {
     X.major     = SDL_IMAGE_MAJOR_VERSION;
     X.minor     = SDL_IMAGE_MINOR_VERSION;
     X.patch     = SDL_IMAGE_PATCHLEVEL;
