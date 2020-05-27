@@ -8,8 +8,8 @@ module main;
 
 import std.stdio;
 import std.conv;
-import derelict.sdl2.sdl;
-import derelict.opengl3.gl3;
+import bindbc.sdl;
+import bindbc.opengl;
 import shader;
 import game;
 
@@ -58,7 +58,7 @@ void main( string[] args )
 	const int screenWidth = 640;
 	const int screenHeight = 480;
 
-	DerelictSDL2.load();
+	SDLSupport ret = loadSDL();
 
 	if (SDL_Init( SDL_INIT_EVERYTHING ) < 0)
 	{
@@ -73,7 +73,7 @@ void main( string[] args )
 
 	auto win = SDL_CreateWindow("Breakout", SDL_WINDOWPOS_CENTERED,
 	                    SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	DerelictGL3.load();
+
 	auto context = SDL_GL_CreateContext( win );
 
 	if (!context)
@@ -81,8 +81,8 @@ void main( string[] args )
 		throw new Error( "Failed to create GL context!" );
 	}
 
-	DerelictGL3.reload();
-
+        GLSupport re = loadOpenGL();
+        
 	SDL_GL_SetSwapInterval( 1 );
 
 	GLuint vao;
@@ -90,7 +90,7 @@ void main( string[] args )
 	GenerateQuadBuffers( vao, vbo );
 
 	Shader gshader = new Shader();
-	gshader.Load( "shader.vert", "shader.frag" );
+	gshader.Load( "Breakout/shader.vert", "Breakout/shader.frag" );
 	gshader.Use();
 	float[] projection;
 	MakeProjectionMatrix( 0, screenWidth, screenHeight, 0, -1, 1, projection );

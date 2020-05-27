@@ -1,0 +1,17 @@
+{
+    "name": "breakoutgame",
+    "targetType": "executable",
+    "description": "Breakout",
+    "authors": ["Timo Wiren"],
+    "homepage": "http://twiren.kapsi.fi",
+    "license": "MIT",
+    "sourcePaths": ["Breakout"],
+    "dependencies": {
+   	 "bindbc-sdl": "~>0.1.0",
+   	 "bindbc-opengl": "~>0.1.0"
+    },
+    "versions": [
+        "GL_33"
+    ]
+}
+
